@@ -1,0 +1,36 @@
+# Ignore contents of specific Image subfolders, but keep the folders
+Images/Processed_imgs/*
+Images/Raw_imgs/*
+# Optionally, un-ignore .gitkeep files if you want to track the empty folders
+!Images/Processed_imgs/.gitkeep
+!Images/Raw_imgs/.gitkeep
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Poetry specific (if not committing lock file for libraries)
+# poetry.lock
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/

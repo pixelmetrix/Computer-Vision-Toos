@@ -1,0 +1,21 @@
+[project]
+name = "computer-vision-toos"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Diego",email = "correadiego09@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pillow (>=12.1.1,<13.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^7.2.0"
+
