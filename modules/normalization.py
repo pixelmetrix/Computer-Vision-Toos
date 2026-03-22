@@ -4,10 +4,7 @@ from .process_fcns import *
 
 class Normalize(): 
     """
-    Abstract super class whose instances specify the particular raw folder we'll process. 
-    Processed images will be pasted in Processed_imgs folder. Subclasses have a slight
-    modification for processing images, depending on our use (training or inference).
-    Note: this class is not meant to be instanciated
+    Class to preprocess (i.e. normalize) images into sub, 1024x1024 images.
     """
     def __init__(self,folder_name: str):
         self.folder_name = str(folder_name) #track folder name
@@ -21,13 +18,12 @@ class Normalize():
         if not self.raw_path.exists():
             raise FileNotFoundError(f"The folder '{self.raw_path}' does not exist.")
 
-    def preprocess(self):
+    def preprocess(self) -> None:
         """
         cut images, pad them, and place them into processed folder.
         the border value for pad is calculated to be a multiple of 32.
         of the image dimension. this logic is implemented in the mul_32 function
         This works as long as the images to be processed are square.
-        Note: method changes slightly depending on subclass.
         """        
         try:
 
@@ -37,7 +33,6 @@ class Normalize():
                 print(f"Processing image: {img_route}")
                 # Instanciate image object
                 input_image = Image.open(self.raw_path / img_route.name)
-                # input_image = self.action(input_image)
                 for index2, imagen in enumerate(divide_rectangular(input_image)):
                     # Find img dimension and, if not multiple of 32, find the next multiple.
                     # Find the difference between the multiple and img dimension. divide by to
@@ -51,7 +46,26 @@ class Normalize():
             print(f"Overall preprocessing error: {e}")
             raise
 
+    def delete(self, deletion_factor: int = 2) -> None:
+        """
+        Delete every "deletion_factor" items from the images in processed folder.
+        """    
+        # Raise exception if processed folder does not exist
+        if not self.processed_path.exists():
+            raise FileNotFoundError(f"The folder '{self.processed_path}' does not exist. Make sure to preprocess images first")
+
+        # List all items in a directory
+        items = list(self.processed_path.iterdir())
+        
+        # Raise exception if folder is empty
+        if not items:
+            raise ValueError("The folder is empty")
+        
+        # Delete every deletion_factor-th item
+        for i in range(deletion_factor - 1, len(items), deletion_factor):
+            items[i].unlink()
+
 if __name__ == "__main__":
 
     my_objct = Normalize("test")
-    print(my_objct.folder_name)
+    my_objct.delete()

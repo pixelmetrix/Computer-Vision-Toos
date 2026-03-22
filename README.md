@@ -93,7 +93,70 @@ normalizer.preprocess()
 # Images/Processed_imgs/my_images_processed/
 ```
 
-**Important notes:**
+### Deleting processed images
+
+The `Normalization` class includes a `delete()` method to selectively remove processed images. This is useful for reducing dataset size or cleaning up unwanted patches.
+
+#### Method signature
+
+```python
+def delete(self, deletion_factor: int = 2) -> None:
+    """
+    Delete every "deletion_factor" items from the images in processed folder.
+    """
+```
+
+#### Parameters
+
+- **`deletion_factor`** (int, default=2): Determines which items to delete
+  - `deletion_factor=2`: Deletes every 2nd item (removes ~50% of images)
+  - `deletion_factor=3`: Deletes every 3rd item (removes ~33% of images)
+  - `deletion_factor=4`: Deletes every 4th item (removes ~25% of images)
+
+#### Examples
+
+```python
+from modules.normalization import Normalization
+
+# Create an instance
+normalizer = Normalization(folder_name="my_images")
+
+# Preprocess images first
+normalizer.preprocess()
+
+# Delete every 2nd image (default, removes ~50%)
+normalizer.delete()
+
+# Delete every 3rd image (removes ~33%)
+normalizer.delete(deletion_factor=3)
+
+# Delete every 4th image (removes ~25%)
+normalizer.delete(deletion_factor=4)
+```
+
+#### Exception Handling
+
+The `delete()` method will raise exceptions in the following cases:
+
+- **`FileNotFoundError`**: Raised if the processed folder does not exist. Make sure to call `.preprocess()` first.
+  ```python
+  normalizer.delete()  # Raises FileNotFoundError if preprocess() wasn't called
+  ```
+
+- **`ValueError`**: Raised if the processed folder is empty.
+  ```python
+  normalizer.delete()  # Raises ValueError if no images are in the processed folder
+  ```
+
+#### Important notes
+
+- **The processed folder must exist**: Call `.preprocess()` before using `.delete()`
+- **Deletion is permanent**: Deleted images cannot be recovered. Consider backing up your processed folder first.
+- **Operates on processed images only**: This method only affects images in the processed folder, not the original raw images.
+
+---
+
+**Module notes:**
 - **`normalization.py`**: Contains the `Normalization()` class - this is the main interface you should use
 - **`process_fcns.py`**: Internal helper functions used by the `Normalization()` class - not meant to be used directly
 - **`deprecated.py`**: Discontinued work - do not use
@@ -134,6 +197,9 @@ normalizer.preprocess()
 
 # The processed 1024x1024 patches will be saved in:
 # Images/Processed_imgs/my_images_processed/
+
+# Delete every 2nd image
+normalizer.delete(deletion_factor=2)
 ```
 
 **Note:** Do not directly import or use functions from `process_fcns.py` - these are internal helper functions used by the `Normalization` class.
