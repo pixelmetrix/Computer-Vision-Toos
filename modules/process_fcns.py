@@ -1,3 +1,4 @@
+from PIL import Image
 def mul_32(n):
     """
     Find next multiple of 32
@@ -56,3 +57,42 @@ def divide_rectangular(img):
             parts.append(part)
     
     return tuple(parts)
+
+def divide_new(img: Image, tile_dimension: int = 1280) -> tuple:
+
+    if not isinstance(img, Image.Image):
+        raise TypeError(f"img must be a PIL Image, got {type(img).__name__}")
+
+    if tile_dimension <= 0:
+        raise ValueError("tile dimension needs to be positive")
+    
+    if (tile_dimension <= 32):
+        raise ValueError("tile dimension needs to be greater than 32")
+    
+    if (tile_dimension % 32 != 0):
+        print('tile dimension must be multiple of 32')
+
+    # Get the width and height of the input image
+    width, height = img.size
+    iter_width = width // tile_dimension # iter width
+    iter_height = height // tile_dimension # iter height
+
+    parts = []
+    for i in range(iter_width):
+        for j in range(iter_height):
+            left   = i * tile_dimension
+            right  = left + tile_dimension
+            upper  = j * tile_dimension
+            lower  = upper + tile_dimension
+
+            # print(f"top-left: ({left}, {upper}), bottom-right: ({right}, {lower})")
+            part = img.crop((left, upper, right, lower))
+            parts.append(part)
+
+    return tuple(parts)
+
+if __name__ == "__main__":
+    from pathlib import Path
+    image_path = Path('Images/Raw_imgs/bb3_b1/IMG_5318.JPG')
+    input_image = Image.open(image_path)
+    print(divide_new(input_image))

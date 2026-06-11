@@ -1,4 +1,4 @@
-from PIL import Image, ImageOps
+from PIL import Image #, ImageOps
 from pathlib import Path
 from .process_fcns import *
 
@@ -33,11 +33,11 @@ class Normalize():
                 print(f"Processing image: {img_route}")
                 # Instanciate image object
                 input_image = Image.open(self.raw_path / img_route.name)
-                for index2, imagen in enumerate(divide_rectangular(input_image)):
+                for index2, imagen in enumerate(divide_new(input_image)):
                     # Find img dimension and, if not multiple of 32, find the next multiple.
                     # Find the difference between the multiple and img dimension. divide by to
-                    temp = int((mul_32(imagen.size[0]) - imagen.size[0]) / 2) #increases inference time significantly
-                    imagen = ImageOps.expand(imagen, border=temp, fill='gray')  # pad images
+                    # temp = int((mul_32(imagen.size[0]) - imagen.size[0]) / 2) #increases inference time significantly
+                    # imagen = ImageOps.expand(imagen, border=temp, fill='gray')  # pad images
                     imagen.save(self.processed_path / f'{self.folder_name}_{index:04d}_{index2:02d}.jpeg')
               
             print('Preprocessing Successful')
@@ -67,5 +67,6 @@ class Normalize():
 
 if __name__ == "__main__":
 
-    my_objct = Normalize("test")
-    my_objct.delete()
+    my_objct = Normalize("bb6_1")
+    my_objct.preprocess()
+    # my_objct.delete()
